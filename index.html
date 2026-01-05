@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MAX MODS System</title>
+<style>
+body { font-family: system-ui; background:#1a1a1a; color:#fff; margin:0; }
+.header { background:#222; padding:15px; font-size:2em; text-align:center; font-weight:bold; box-shadow:0 2px 10px #000; }
+.container { padding:20px; }
+.input-box { width:100%; padding:12px; border-radius:8px; border:none; margin-bottom:10px; font-size:1em; }
+.button { padding:12px 20px; border:none; border-radius:6px; margin:5px; cursor:pointer; font-weight:bold; }
+.update-btn { background:#3498db; color:#fff; }
+.run-btn { background:#2ecc71; color:#fff; }
+.stop-btn { background:#e74c3c; color:#fff; }
+.back-btn { background:#95a5a6; color:#fff; }
+.log { background:#111; color:#0f0; padding:10px; border-radius:6px; height:150px; overflow:auto; font-family:monospace; margin-top:10px; }
+.card { background:#222; padding:15px; border-radius:10px; margin-bottom:15px; box-shadow:0 2px 8px #000; }
+</style>
+</head>
+<body>
+
+<!-- Password Screen -->
+<div id="passwordScreen" class="container">
+  <div class="card">
+    <h2>Enter Password</h2>
+    <input type="password" id="passwordInput" class="input-box" placeholder="Password here">
+    <button onclick="checkPassword()" class="button update-btn">Submit</button>
+    <p id="passwordMsg" style="color:red;"></p>
+  </div>
+</div>
+
+<!-- Main MAX MODS Screen -->
+<div id="mainScreen" style="display:none;" class="container">
+  <div class="header">MAX MODS</div>
+
+  <div class="card">
+    <input type="text" id="commandInput" class="input-box" placeholder="Type command..." onkeyup="showSuggestion()">
+    <p id="suggestion" style="font-style:italic;"></p>
+  </div>
+
+  <div class="card">
+    <button onclick="goBack()" class="button back-btn">⬅ Back</button>
+    <button onclick="performUpdate()" class="button update-btn">Update</button>
+    <button onclick="runAll()" class="button run-btn">Run All</button>
+    <button onclick="stopAll()" class="button stop-btn">Stop</button>
+  </div>
+
+  <div id="updateLog" class="log"></div>
+</div>
+
+<script>
+// ===== Password Screen =====
+let correctPassword = "boss123"; // set your password here
+
+function checkPassword(){
+  let input = document.getElementById("passwordInput").value;
+  let msg = document.getElementById("passwordMsg");
+  if(input === correctPassword){
+    msg.style.color = "#0f0";
+    msg.innerText = "Welcome Boss, system started. Please wait...";
+    speak("Welcome Boss, system started. Please wait");
+    setTimeout(() => {
+      document.getElementById("passwordScreen").style.display = "none";
+      document.getElementById("mainScreen").style.display = "block";
+    }, 2000);
+  } else {
+    msg.style.color = "#f00";
+    msg.innerText = "Wrong password, try again!";
+    speak("Wrong password, try again");
+  }
+}
+
+// ===== Voice Function =====
+function speak(text){
+    let msg = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(msg);
+}
+
+// ===== Command Suggestion =====
+function showSuggestion(){
+    let input = document.getElementById("commandInput").value.toLowerCase();
+    let sug = "";
+    if(input.includes("update")) sug = "Tip: Clicking 'Update' runs pkg update & upgrade";
+    else if(input.includes("run")) sug = "Tip: Clicking 'Run All' will start all hosted files/bots/pages";
+    else if(input.includes("stop")) sug = "Tip: Clicking 'Stop' will halt all running processes";
+    else sug = "";
+    document.getElementById("suggestion").innerText = sug;
+}
+
+// ===== Buttons =====
+function goBack(){
+    alert("Back button clicked");
+    // implement your back logic
+}
+
+function performUpdate(){
+    let log = document.getElementById("updateLog");
+    log.innerHTML = "";
+    let commands = ["pkg update", "pkg upgrade -y"];
+    let i=0;
+    function next(){
+        if(i<commands.length){
+            log.innerHTML += "> " + commands[i] + "<br>";
+            speak("Running " + commands[i]);
+            i++;
+            setTimeout(next, 1000);
+        } else {
+            log.innerHTML += "✅ All update & upgrade commands completed!<br>";
+            speak("Update and upgrade completed");
+        }
+    }
+    next();
+}
+
+// ===== Run All Files / Bots / Pages =====
+let hostedFiles = [
+  "https://example1.com",
+  "https://example2.com",
+  "https://example3.com"
+];
+
+function runAll(){
+    let log = document.getElementById("updateLog");
+    log.innerHTML = "";
+    hostedFiles.forEach(url=>{
+        window.open(url, "_blank");
+        log.innerHTML += "> Running: " + url + "<br>";
+    });
+    speak("All files, pages and bots are running now");
+}
+
+// ===== Stop All (simulation) =====
+function stopAll(){
+    document.getElementById("updateLog").innerHTML += "⛔ All processes stopped<br>";
+    speak("All processes stopped");
+}
+</script>
+
+</body>
+  </html>
